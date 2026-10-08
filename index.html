@@ -442,7 +442,8 @@
 		.tool .links { margin-top: auto; padding-top: 10px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: .94rem; font-weight: 600; }
 		.tool .links a { text-decoration: none; }
 		.tool .links a:hover { text-decoration: underline; }
-		.tool.featured { border-color: color-mix(in srgb, var(--wicket) 45%, var(--border)); }
+		.tool { transition: border-color .15s ease, box-shadow .15s ease; }
+		.tool:hover, .tool:focus-within { border-color: color-mix(in srgb, var(--wicket) 45%, var(--border)); }
 
 		.curl { margin-top: 20px; }
 
@@ -646,7 +647,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
 						Start a conversation
 					</a>
-					<a class="btn btn-secondary" href="https://start.fullstack4j.dev/#!type=maven-project&amp;dependencies=wicket,data-mongodb,testcontainers,modulith">
+					<a class="btn btn-secondary" href="https://start.fullstack4j.dev/#!type=maven-project&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">
 						Generate a project
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
 					</a>
@@ -1077,7 +1078,7 @@ class OrderServiceTests {
 				</div>
 				<div class="card">
 					<h3>Conventions as skills</h3>
-					<p>Curated agent skills, such as those collected at <a href="https://jvmskills.com/">jvmskills.com</a>, teach agents how your team builds slices.</p>
+					<p>Curated agent skills, such as those collected at <a href="https://jvmskills.com/" target="_blank" rel="noopener">jvmskills.com</a>, teach agents how your team builds slices.</p>
 				</div>
 			</div>
 		</div>
@@ -1149,7 +1150,7 @@ class OrderServiceTests {
 				<span class="kicker">How the team works</span>
 				<h2>Fixed time, variable scope: a rhythm built for small teams.</h2>
 				<p>
-					Our teams work with the core ideas of <a href="https://basecamp.com/shapeup">Shape Up</a>, the method
+					Our teams work with the core ideas of <a href="https://basecamp.com/shapeup" target="_blank" rel="noopener">Shape Up</a>, the method
 					Basecamp developed for small product teams. It fits the stack almost too well: its standard team is one
 					designer and two programmers, and it builds front end and back end together, one piece at a time. With
 					Wicket's plain HTML templates, the designer works in the same repository as everyone else.
@@ -1185,7 +1186,7 @@ class OrderServiceTests {
 			</div>
 			<p class="credit">
 				Shape Up was written by Ryan Singer at Basecamp and is free to read at
-				<a href="https://basecamp.com/shapeup">basecamp.com/shapeup</a>. We use its core ideas and adapt the
+				<a href="https://basecamp.com/shapeup" target="_blank" rel="noopener">basecamp.com/shapeup</a>. We use its core ideas and adapt the
 				details to each team.
 			</p>
 		</div>
@@ -1204,7 +1205,7 @@ class OrderServiceTests {
 			</div>
 
 			<div class="tools">
-				<article class="card tool featured">
+				<article class="card tool">
 					<span class="label">start.fullstack4j.dev</span>
 					<h3>fullstack4j start</h3>
 					<p>
@@ -1212,8 +1213,8 @@ class OrderServiceTests {
 						defaults preselected: Wicket, MongoDB, Testcontainers and Spring Modulith.
 					</p>
 					<div class="links">
-						<a href="https://start.fullstack4j.dev/#!type=maven-project&amp;dependencies=wicket,data-mongodb,testcontainers,modulith">Open the generator →</a>
-						<a href="https://github.com/danielbartl/fullstack4j-start">GitHub</a>
+						<a href="https://start.fullstack4j.dev/#!type=maven-project&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">Open the generator →</a>
+						<a href="https://github.com/danielbartl/fullstack4j-start" target="_blank" rel="noopener">GitHub</a>
 					</div>
 				</article>
 				<article class="card tool">
@@ -1224,8 +1225,8 @@ class OrderServiceTests {
 						<code>@SpringBean</code> injection, DevTools support. Small enough to read in one sitting.
 					</p>
 					<div class="links">
-						<a href="https://danielbartl.github.io/wicket-spring-boot-starter/">Project page →</a>
-						<a href="https://github.com/danielbartl/wicket-spring-boot-starter">GitHub</a>
+						<a href="https://danielbartl.github.io/wicket-spring-boot-starter/" target="_blank" rel="noopener">Project page →</a>
+						<a href="https://github.com/danielbartl/wicket-spring-boot-starter" target="_blank" rel="noopener">GitHub</a>
 					</div>
 				</article>
 				<article class="card tool">
@@ -1236,9 +1237,9 @@ class OrderServiceTests {
 						accessible forms by default and light and dark themes.
 					</p>
 					<div class="links">
-						<a href="https://danielbartl.github.io/wicket-oat/">Live demo →</a>
-						<a href="https://danielbartl.github.io/wicket-oat/tutorial.html">Tutorial</a>
-						<a href="https://github.com/danielbartl/wicket-oat">GitHub</a>
+						<a href="https://danielbartl.github.io/wicket-oat/" target="_blank" rel="noopener">Live demo →</a>
+						<a href="https://danielbartl.github.io/wicket-oat/tutorial.html" target="_blank" rel="noopener">Tutorial</a>
+						<a href="https://github.com/danielbartl/wicket-oat" target="_blank" rel="noopener">GitHub</a>
 					</div>
 				</article>
 			</div>
@@ -1252,16 +1253,16 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 			<div class="stack">
 				<div class="stack-head">Built on proven open source</div>
 				<div class="chips">
-					<a class="chip" href="https://spring.io/projects/spring-boot">Spring Boot</a>
-					<a class="chip" href="https://wicket.apache.org/">Apache Wicket</a>
-					<a class="chip" href="https://www.mongodb.com/">MongoDB</a>
-					<a class="chip" href="https://spring.io/projects/spring-data-mongodb">Spring Data MongoDB</a>
-					<a class="chip" href="https://spring.io/projects/spring-modulith">Spring Modulith</a>
-					<a class="chip" href="https://junit.org/">JUnit</a>
-					<a class="chip" href="https://site.mockito.org/">Mockito</a>
-					<a class="chip" href="https://www.archunit.org/">ArchUnit</a>
-					<a class="chip" href="https://testcontainers.com/">Testcontainers</a>
-					<a class="chip" href="https://jvmskills.com/">jvmskills.com <small>agent skills</small></a>
+					<a class="chip" href="https://spring.io/projects/spring-boot" target="_blank" rel="noopener">Spring Boot</a>
+					<a class="chip" href="https://wicket.apache.org/" target="_blank" rel="noopener">Apache Wicket</a>
+					<a class="chip" href="https://www.mongodb.com/" target="_blank" rel="noopener">MongoDB</a>
+					<a class="chip" href="https://spring.io/projects/spring-data-mongodb" target="_blank" rel="noopener">Spring Data MongoDB</a>
+					<a class="chip" href="https://spring.io/projects/spring-modulith" target="_blank" rel="noopener">Spring Modulith</a>
+					<a class="chip" href="https://junit.org/" target="_blank" rel="noopener">JUnit</a>
+					<a class="chip" href="https://site.mockito.org/" target="_blank" rel="noopener">Mockito</a>
+					<a class="chip" href="https://www.archunit.org/" target="_blank" rel="noopener">ArchUnit</a>
+					<a class="chip" href="https://testcontainers.com/" target="_blank" rel="noopener">Testcontainers</a>
+					<a class="chip" href="https://jvmskills.com/" target="_blank" rel="noopener">jvmskills.com <small>agent skills</small></a>
 				</div>
 			</div>
 		</div>
@@ -1275,12 +1276,12 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 					<span class="kicker">Who's behind it</span>
 					<h2>A cooperative of senior engineers, not a one-person show.</h2>
 					<p>
-						fullstack4j is an offering of <a href="https://allwerker.com/en/">allwerker eG</a>, an IT cooperative
+						fullstack4j is an offering of <a href="https://allwerker.com/en/" target="_blank" rel="noopener">allwerker eG</a>, an IT cooperative
 						founded in Munich in 2023. Its members are independent senior engineers, architects and consultants
 						who run the cooperative together as equal partners. You work directly with the people who deliver.
 					</p>
 				</div>
-				<a class="aw-badge" href="https://allwerker.com/en/"><img src="assets/allwerker-logo.svg" alt="allwerker" width="206" height="30"></a>
+				<a class="aw-badge" href="https://allwerker.com/en/" target="_blank" rel="noopener"><img src="assets/allwerker-logo.svg" alt="allwerker" width="206" height="30"></a>
 			</div>
 
 			<div class="facts aw-facts">
@@ -1339,7 +1340,7 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 					<p>
 						Software engineer and agile practitioner in Munich. In 2004 he founded a Java and Spring consultancy and
 						grew it to more than a hundred people in self-managing teams without middle management, until it was
-						acquired in 2021. He has organised the <a href="https://www.ljugminga.org/">Lightweight Java User Group</a>
+						acquired in 2021. He has organised the <a href="https://www.ljugminga.org/" target="_blank" rel="noopener">Lightweight Java User Group</a>
 						since 2010 and maintains the fullstack4j toolbox.
 					</p>
 					<div class="facts">
@@ -1348,9 +1349,9 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 						<div><strong>Since 2010</strong><span>running a Java user group</span></div>
 					</div>
 					<div class="more-links">
-						<a href="https://danielbartl.com/">danielbartl.com →</a>
-						<a href="https://allwerker.com/en/members/">Meet all allwerker members →</a>
-						<a href="https://allwerker.com/en/services/">allwerker services →</a>
+						<a href="https://danielbartl.com/" target="_blank" rel="noopener">danielbartl.com →</a>
+						<a href="https://allwerker.com/en/members/" target="_blank" rel="noopener">Meet all allwerker members →</a>
+						<a href="https://allwerker.com/en/services/" target="_blank" rel="noopener">allwerker services →</a>
 					</div>
 				</div>
 			</div>
@@ -1590,7 +1591,7 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
 					hello@danielbartl.com
 				</a>
-				<a class="btn btn-secondary" href="https://allwerker.com/en/">Meet allwerker</a>
+				<a class="btn btn-secondary" href="https://allwerker.com/en/" target="_blank" rel="noopener">Meet allwerker</a>
 			</div>
 		</div>
 	</section>
@@ -1599,14 +1600,14 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 
 <footer>
 	<div class="wrap">
-		<span>fullstack4j is an offering of <a href="https://allwerker.com/en/">allwerker eG</a> · Munich, Germany</span>
+		<span>fullstack4j is an offering of <a href="https://allwerker.com/en/" target="_blank" rel="noopener">allwerker eG</a> · Munich, Germany</span>
 		<nav aria-label="Footer">
-			<a href="https://allwerker.com/en/">allwerker</a>
-			<a href="https://github.com/danielbartl">GitHub</a>
-			<a href="https://www.linkedin.com/in/danielbartl-muc/">LinkedIn</a>
-			<a href="https://danielbartl.com/notes/">Notes</a>
-			<a href="https://www.allwerker.com/en/terms/">Impressum</a>
-			<a href="https://danielbartl.com/datenschutz/">Datenschutz</a>
+			<a href="https://allwerker.com/en/" target="_blank" rel="noopener">allwerker</a>
+			<a href="https://github.com/danielbartl" target="_blank" rel="noopener">GitHub</a>
+			<a href="https://www.linkedin.com/in/danielbartl-muc/" target="_blank" rel="noopener">LinkedIn</a>
+			<a href="https://danielbartl.com/notes/" target="_blank" rel="noopener">Notes</a>
+			<a href="https://www.allwerker.com/en/terms/" target="_blank" rel="noopener">Impressum</a>
+			<a href="https://danielbartl.com/datenschutz/" target="_blank" rel="noopener">Datenschutz</a>
 		</nav>
 	</div>
 </footer>
