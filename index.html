@@ -355,6 +355,7 @@
 		.tok-g { color: #ff8f5c; }
 		.tok-p { color: #79c0ff; }
 
+		.code pre.tree { font-size: 11.5px; padding-inline: 16px; }
 		.tree .dir { color: #79c0ff; }
 		.tree .hl { color: #ff8f5c; font-weight: 600; }
 		.tree .note { color: #6f7682; font-style: italic; }
@@ -647,7 +648,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
 						Start a conversation
 					</a>
-					<a class="btn btn-secondary" href="https://start.fullstack4j.dev/#!type=maven-project&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">
+					<a class="btn btn-secondary" href="https://start.fullstack4j.dev/#!type=maven-project&amp;jvmVersion=25&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">
 						Generate a project
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
 					</a>
@@ -812,7 +813,7 @@
 						<span class="num">01</span>
 						<h3>Slices, not layers</h3>
 						<p>
-							Each feature lives in one package: its Wicket page, its service, its MongoDB documents and repository, and the
+							Each feature lives in one module: its Wicket page, its use cases, its MongoDB documents and repository, and the
 							events it publishes. One person or pair takes it from idea to production. There are no
 							"frontend part" and "backend part" tickets.
 						</p>
@@ -836,7 +837,8 @@
 						<span class="num">03</span>
 						<h3>Boundaries are tested, not documented</h3>
 						<p>
-							Spring Modulith turns each slice into a module, and ArchUnit adds the house rules. When code reaches
+							Spring Modulith turns each slice into a module that shows the others only its events, and ArchUnit
+							adds the house rules. When code reaches
 							into another slice, the build fails. Architecture stays intact while people, and agents, write
 							code quickly.
 						</p>
@@ -849,7 +851,8 @@
 						<h3>AI as the fourth team member</h3>
 						<p>
 							A uniform, typed, well-tested codebase with enforced boundaries is where coding agents do their best
-							work. People decide what to build and review the result; agents handle the routine work in between.
+							work. People decide what to build and write it down in the slice itself; agents build until its
+							tests pass; people review the result.
 						</p>
 					</div>
 				</article>
@@ -864,7 +867,7 @@
 				<span class="kicker">Anatomy of a slice</span>
 				<h2>What a feature looks like when one person owns it.</h2>
 				<p>
-					Everything a feature needs, in one folder you can read in ten minutes. This is ordinary Wicket, Spring Boot
+					Everything a feature needs, in one package you can read in ten minutes. This is ordinary Wicket, Spring Boot
 					and Spring Data MongoDB. The only rule is where things go.
 				</p>
 			</div>
@@ -875,26 +878,37 @@
 						<div class="code-head"><span class="dots"><i></i><i></i><i></i></span><span class="file">src/main/java/com/acme/shop</span></div>
 <pre class="tree"><code><span class="dir">shop/</span>
 ├── ShopApplication.java
+├── StartPage.java        <span class="note">links to each slice's page</span>
+├── package-info.java     <span class="note">the map: slices, flow, words</span>
 ├── <span class="hl">ordering/</span>             <span class="note">one slice, one module</span>
-│   ├── OrdersPage.java    <span class="note">UI, plain Wicket</span>
-│   ├── OrdersPage.html    <span class="note">markup, no JS build</span>
-│   ├── OrderService.java  <span class="note">use cases</span>
-│   ├── Order.java         <span class="note">one MongoDB document</span>
-│   ├── Orders.java        <span class="note">MongoRepository</span>
-│   └── OrderShipped.java  <span class="note">event for others</span>
+│   ├── package-info.java  <span class="note">the spec: what it promises</span>
+│   ├── <span class="dir">boundary/</span>          <span class="note">entry points and events</span>
+│   │   ├── OrdersPage.java       <span class="note">UI, plain Wicket</span>
+│   │   ├── Orders.java           <span class="note">use cases</span>
+│   │   └── OrderShipped.java     <span class="note">the only exposed type</span>
+│   ├── <span class="dir">control/</span>
+│   │   └── OrderRepository.java  <span class="note">MongoRepository</span>
+│   └── <span class="dir">entity/</span>
+│       └── Order.java            <span class="note">one MongoDB document</span>
 ├── <span class="dir">billing/</span>              <span class="note">listens to OrderShipped</span>
 └── <span class="dir">shipping/</span>
 
+<span class="dir">src/main/resources/…/shop/</span>
+├── StartPage.html
+└── <span class="dir">ordering/boundary/</span>
+    └── OrdersPage.html   <span class="note">markup, no JS build</span>
+
 <span class="dir">src/test/java/…/shop/</span>
-├── <span class="test">ArchitectureTests.java</span>    <span class="note">Modulith + ArchUnit</span>
-├── <span class="test">TestShopApplication.java</span>  <span class="note">dev run on MongoDB</span>
-└── <span class="dir">ordering/</span>
-    └── <span class="test">OrderServiceTests.java</span>  <span class="note">real MongoDB</span></code></pre>
+├── <span class="test">ArchitectureTests.java</span>      <span class="note">Modulith + ArchUnit</span>
+├── <span class="test">SpecTraceabilityTests.java</span>  <span class="note">spec and tests in step</span>
+├── <span class="test">TestShopApplication.java</span>    <span class="note">dev run on MongoDB</span>
+└── <span class="dir">ordering/boundary/</span>
+    └── <span class="test">OrdersTests.java</span>        <span class="note">one test per requirement</span></code></pre>
 					</div>
 					<div class="anatomy-notes">
-						<div><strong>Readable by anyone on the team.</strong> No frontend folder and backend folder to keep in sync.</div>
+						<div><strong>Readable by anyone, starting with the spec.</strong> No frontend folder and backend folder to keep in sync. The slice's <code>package-info.java</code> says what it promises in one screen, and it is the first thing a new colleague or an agent reads.</div>
 						<div><strong>Small enough for one head</strong>, and for one agent's context window.</div>
-						<div><strong>Guarded by tests.</strong> <code>billing</code> can react to an order being shipped, but it can't reach into <code>ordering</code>'s internals.</div>
+						<div><strong>Guarded by tests.</strong> <code>billing</code> can react to an order being shipped, but it only sees <code>OrderShipped</code>; the rest of <code>ordering</code> stays internal. And every requirement in the spec has a test that carries its id.</div>
 						<div><strong>Stored as documents.</strong> An order and its lines are one MongoDB document, shaped like the code, so the schema grows with the slice instead of through migrations.</div>
 					</div>
 				</div>
@@ -903,19 +917,59 @@
 					<div class="code-head">
 						<span class="dots"><i></i><i></i><i></i></span>
 						<div class="tabs" role="tablist" aria-label="Files of the ordering slice">
-							<button class="tab" role="tab" id="t-page" aria-controls="p-page" aria-selected="true">OrdersPage.java</button>
+							<button class="tab" role="tab" id="t-spec" aria-controls="p-spec" aria-selected="true">package-info.java</button>
+							<button class="tab" role="tab" id="t-page" aria-controls="p-page" aria-selected="false" tabindex="-1">OrdersPage.java</button>
 							<button class="tab" role="tab" id="t-html" aria-controls="p-html" aria-selected="false" tabindex="-1">OrdersPage.html</button>
-							<button class="tab" role="tab" id="t-svc" aria-controls="p-svc" aria-selected="false" tabindex="-1">OrderService.java</button>
+							<button class="tab" role="tab" id="t-svc" aria-controls="p-svc" aria-selected="false" tabindex="-1">Orders.java</button>
 							<button class="tab" role="tab" id="t-doc" aria-controls="p-doc" aria-selected="false" tabindex="-1">Order.java</button>
-							<button class="tab" role="tab" id="t-test" aria-controls="p-test" aria-selected="false" tabindex="-1">OrderServiceTests.java</button>
+							<button class="tab" role="tab" id="t-test" aria-controls="p-test" aria-selected="false" tabindex="-1">OrdersTests.java</button>
 							<button class="tab" role="tab" id="t-arch" aria-controls="p-arch" aria-selected="false" tabindex="-1">ArchitectureTests.java</button>
+							<button class="tab" role="tab" id="t-trace" aria-controls="p-trace" aria-selected="false" tabindex="-1">SpecTraceabilityTests.java</button>
 						</div>
 						<button class="copy" type="button">Copy</button>
 					</div>
-<div class="tab-panel" role="tabpanel" id="p-page" aria-labelledby="t-page"><pre><code data-lang="java">public class OrdersPage extends WebPage {
+<div class="tab-panel" role="tabpanel" id="p-spec" aria-labelledby="t-spec"><pre><code data-lang="java">/// # Ordering
+/// &gt; Take a customer's order and see it through until it ships.
+///
+/// ## Boundary
+/// - `place-order`: take an order for a customer (`Orders.place`)
+/// - `open-orders`: list what still has to ship (`Orders.open`)
+/// - `ship-order`: hand an open order over to shipping (`Orders.ship`)
+///
+/// ## Requirements
+/// ### R1: Place an order
+/// - R1.1 — When a customer places an order with at least one line,
+///   the slice shall list it as open.
+/// - R1.2 — If an order has no lines, then the slice shall reject it.
+///
+/// ### R2: Ship an order
+/// - R2.1 — When an open order is shipped, the slice shall no longer
+///   list it as open.
+/// - R2.2 — When an open order is shipped, the slice shall publish
+///   `OrderShipped`.
+/// - R2.3 — If the order has already shipped, then the slice shall
+///   reject the request.
+///
+/// ## Events
+/// - publishes `OrderShipped` (R2.2)
+/// - listens to nothing
+///
+/// ## Entities
+/// - `Order`: one document with its customer, lines and status
+///
+/// ## Out of scope
+/// - prices and invoices (`billing`)
+/// - parcels and carriers (`shipping`)
+@ApplicationModule(displayName = "Ordering", allowedDependencies = {})
+package com.acme.shop.ordering;
+
+import org.springframework.modulith.ApplicationModule;</code></pre></div>
+<div class="tab-panel" role="tabpanel" id="p-page" aria-labelledby="t-page" hidden><pre><code data-lang="java">package com.acme.shop.ordering.boundary;
+
+public class OrdersPage extends WebPage {
 
     @SpringBean
-    private OrderService orders;
+    private Orders orders;
 
     public OrdersPage() {
         var list = new WebMarkupContainer("list");
@@ -946,30 +1000,44 @@
         &lt;button wicket:id="ship"&gt;Ship&lt;/button&gt;
     &lt;/li&gt;
 &lt;/ul&gt;</code></pre></div>
-<div class="tab-panel" role="tabpanel" id="p-svc" aria-labelledby="t-svc" hidden><pre><code data-lang="java">@Service
-@Transactional
-public class OrderService {
+<div class="tab-panel" role="tabpanel" id="p-svc" aria-labelledby="t-svc" hidden><pre><code data-lang="java">package com.acme.shop.ordering.boundary;
 
-    private final Orders orders;
+@Service
+@Transactional
+public class Orders {
+
+    private final OrderRepository repository;
     private final ApplicationEventPublisher events;
 
-    OrderService(Orders orders, ApplicationEventPublisher events) {
-        this.orders = orders;
+    Orders(OrderRepository repository,
+           ApplicationEventPublisher events) {
+        this.repository = repository;
         this.events = events;
     }
 
+    public Order place(String customer, List&lt;Order.Line&gt; lines) {
+        return repository.save(Order.open(customer, lines));
+    }
+
     public List&lt;Order&gt; open() {
-        return orders.findByShippedAtIsNull();
+        return repository.findByShippedAtIsNull();
     }
 
     public void ship(String id) {
-        var order = orders.findById(id).orElseThrow().ship();
-        orders.save(order);
+        var order = repository.findById(id).orElseThrow().ship();
+        repository.save(order);
         // billing and shipping react to this; ordering never calls them
         events.publishEvent(new OrderShipped(order.id()));
     }
-}</code></pre></div>
-<div class="tab-panel" role="tabpanel" id="p-doc" aria-labelledby="t-doc" hidden><pre><code data-lang="java">// Stored as one document, lines included: no join table,
+}
+
+// OrderShipped.java: the only type other slices may use;
+// Orders, the page, control and entity stay internal
+@NamedInterface("events")
+public record OrderShipped(String orderId) {}</code></pre></div>
+<div class="tab-panel" role="tabpanel" id="p-doc" aria-labelledby="t-doc" hidden><pre><code data-lang="java">package com.acme.shop.ordering.entity;
+
+// Stored as one document, lines included: no join table,
 // no mapping layer, no migration script for a new field.
 @Document("orders")
 public record Order(@Id String id, String customer,
@@ -977,23 +1045,34 @@ public record Order(@Id String id, String customer,
 
     public record Line(String product, int quantity) {}
 
-    static Order open(String customer, Line... lines) {
-        return new Order(null, customer, List.of(lines), null);
+    public static Order open(String customer, List&lt;Line&gt; lines) {
+        if (lines.isEmpty()) {
+            throw new IllegalArgumentException("an order needs lines");
+        }
+        return new Order(null, customer, List.copyOf(lines), null);
     }
 
-    Order ship() {
+    public Order ship() {
+        if (shippedAt != null) {
+            throw new IllegalStateException("already shipped");
+        }
         return new Order(id, customer, lines, Instant.now());
     }
 }
 
-// Orders.java: the whole persistence layer of the slice
-interface Orders extends MongoRepository&lt;Order, String&gt; {
+// control/OrderRepository.java: the whole persistence layer
+public interface OrderRepository
+        extends MongoRepository&lt;Order, String&gt; {
 
     List&lt;Order&gt; findByShippedAtIsNull();
 }</code></pre></div>
-<div class="tab-panel" role="tabpanel" id="p-test" aria-labelledby="t-test" hidden><pre><code data-lang="java">@Testcontainers
+<div class="tab-panel" role="tabpanel" id="p-test" aria-labelledby="t-test" hidden><pre><code data-lang="java">package com.acme.shop.ordering.boundary;
+
+/// Each test starts with the id of the requirement it proves.
+/// The requirements live in this slice's `package-info.java`.
+@Testcontainers
 @ApplicationModuleTest
-class OrderServiceTests {
+class OrdersTests {
 
     // a real MongoDB in Docker; a replica set, so transactions work
     @Container
@@ -1001,18 +1080,62 @@ class OrderServiceTests {
     static MongoDBContainer mongo =
         new MongoDBContainer("mongo:8").withReplicaSet();
 
-    @Autowired OrderService service;
+    static final List&lt;Order.Line&gt; ONE_WIDGET =
+        List.of(new Order.Line("Widget", 1));
+
     @Autowired Orders orders;
+    @Autowired OrderRepository repository;
+
+    @BeforeEach
+    void startEmpty() {
+        repository.deleteAll();
+    }
 
     @Test
-    void shippingAnOrderPublishesOrderShipped(Scenario scenario) {
-        var order = orders.save(Order.open("Jane Doe",
-                new Order.Line("Coffee beans", 2)));
+    @DisplayName("R1.1 a placed order is listed as open")
+    void placedOrderIsOpen() {
+        var order = orders.place("ACME", ONE_WIDGET);
 
-        scenario.stimulate(() -&gt; service.ship(order.id()))
+        assertThat(orders.open())
+            .extracting(Order::id).containsExactly(order.id());
+    }
+
+    @Test
+    @DisplayName("R1.2 an order without lines is rejected")
+    void orderWithoutLinesIsRejected() {
+        assertThatThrownBy(() -&gt; orders.place("ACME", List.of()))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("R2.1 a shipped order is no longer open")
+    void shippedOrderIsNotOpen() {
+        var order = orders.place("ACME", ONE_WIDGET);
+
+        orders.ship(order.id());
+
+        assertThat(orders.open()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("R2.2 shipping an order publishes OrderShipped")
+    void shippingPublishesOrderShipped(Scenario scenario) {
+        var order = orders.place("ACME", ONE_WIDGET);
+
+        scenario.stimulate(() -&gt; orders.ship(order.id()))
             .andWaitForEventOfType(OrderShipped.class)
             .toArriveAndVerify(event -&gt;
                 assertThat(event.orderId()).isEqualTo(order.id()));
+    }
+
+    @Test
+    @DisplayName("R2.3 an order cannot ship twice")
+    void orderCannotShipTwice() {
+        var order = orders.place("ACME", ONE_WIDGET);
+        orders.ship(order.id());
+
+        assertThatThrownBy(() -&gt; orders.ship(order.id()))
+            .isInstanceOf(IllegalStateException.class);
     }
 }</code></pre></div>
 <div class="tab-panel" role="tabpanel" id="p-arch" aria-labelledby="t-arch" hidden><pre><code data-lang="java">class ArchitectureTests {
@@ -1020,24 +1143,124 @@ class OrderServiceTests {
     ApplicationModules modules =
         ApplicationModules.of(ShopApplication.class);
 
+    JavaClasses classes =
+        new ClassFileImporter().importPackages("com.acme.shop");
+
     @Test
-    void slicesOnlyTalkThroughTheirPublicApi() {
-        // fails on cycles or access to another slice's internals
+    void slicesOnlySeeEachOthersEvents() {
+        // fails on cycles or on any use of another slice
+        // beyond the events it exposes
         modules.verify();
     }
 
     @Test
-    void uiUsesServicesNotRepositories() {
+    void layersPointInward() {
+        // boundary → control → entity, never the other way
+        layeredArchitecture().consideringOnlyDependenciesInLayers()
+            .layer("boundary").definedBy("..boundary..")
+            .layer("control").definedBy("..control..")
+            .layer("entity").definedBy("..entity..")
+            .whereLayer("boundary").mayNotBeAccessedByAnyLayer()
+            .whereLayer("control").mayOnlyBeAccessedByLayers("boundary")
+            .check(classes);
+    }
+
+    @Test
+    void uiNeverTouchesRepositories() {
         noClasses().that().areAssignableTo(Component.class)
             .should().dependOnClassesThat()
             .areAssignableTo(Repository.class)
-            .check(new ClassFileImporter()
-                .importPackages("com.acme.shop"));
+            .check(classes);
+    }
+
+    @Test
+    void rootOnlyKnowsPages() {
+        // the root sits above the slices: it may link to their
+        // pages, but never to their control or entity
+        classes().that().resideInAPackage("com.acme.shop")
+            .should().onlyDependOnClassesThat(
+                resideOutsideOfPackage("com.acme.shop.*..")
+                    .or(assignableTo(Page.class)))
+            .check(classes);
     }
 
     @Test
     void documentsTheArchitecture() {
         new Documenter(modules).writeDocumentation();
+    }
+}</code></pre></div>
+<div class="tab-panel" role="tabpanel" id="p-trace" aria-labelledby="t-trace" hidden><pre><code data-lang="java">/// Keeps every slice's spec and its tests in step.
+///
+/// A requirement id in a slice's `package-info.java` with no test
+/// naming it in its `@DisplayName` is a gap. A test naming an id the
+/// spec doesn't have is drift. Either one fails the build.
+class SpecTraceabilityTests {
+
+    static final Path MAIN = Path.of("src/main/java");
+    static final Path TEST = Path.of("src/test/java");
+
+    static final Pattern REQUIREMENT = Pattern.compile(
+        "^\\s*///\\s*-\\s*(R\\d+\\.\\d+)\\b", Pattern.MULTILINE);
+    static final Pattern TESTED = Pattern.compile(
+        "@(?:[\\w.]+\\.)?DisplayName\\(\\s*\"(R\\d+\\.\\d+)\\b");
+
+    @TestFactory
+    Stream&lt;DynamicTest&gt; everySliceMatchesItsSpec() throws IOException {
+        try (var files = Files.walk(MAIN)) {
+            return files
+                .filter(file -&gt; file.endsWith("package-info.java"))
+                .filter(spec -&gt; !ids(REQUIREMENT, spec).isEmpty())
+                .map(spec -&gt; MAIN.relativize(spec.getParent()))
+                .map(slice -&gt; dynamicTest(name(slice), () -&gt; {
+                    var required = ids(REQUIREMENT, MAIN.resolve(slice)
+                        .resolve("package-info.java"));
+                    var tested = testedIds(TEST.resolve(slice));
+                    assertAll(
+                        () -&gt; assertThat(without(required, tested))
+                            .as("requirements without a test")
+                            .isEmpty(),
+                        () -&gt; assertThat(without(tested, required))
+                            .as("tests without a requirement")
+                            .isEmpty());
+                }))
+                .toList()
+                .stream();
+        }
+    }
+
+    static Set&lt;String&gt; testedIds(Path dir) {
+        if (!Files.isDirectory(dir)) {
+            return Set.of();
+        }
+        try (var files = Files.walk(dir)) {
+            return files
+                .filter(file -&gt; file.toString().endsWith(".java"))
+                .flatMap(file -&gt; ids(TESTED, file).stream())
+                .collect(toCollection(TreeSet::new));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    static Set&lt;String&gt; ids(Pattern pattern, Path file) {
+        try {
+            return pattern.matcher(Files.readString(file)).results()
+                .map(match -&gt; match.group(1))
+                .collect(toCollection(TreeSet::new));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    static Set&lt;String&gt; without(Set&lt;String&gt; these, Set&lt;String&gt; those) {
+        var rest = new TreeSet&lt;&gt;(these);
+        rest.removeAll(those);
+        return rest;
+    }
+
+    static String name(Path slice) {
+        return slice.toString()
+            .replace(slice.getFileSystem().getSeparator(), ".");
     }
 }</code></pre></div>
 				</div>
@@ -1047,40 +1270,49 @@ class OrderServiceTests {
 
 	<!-- ================= AI ================= -->
 	<section id="ai">
-		<div class="wrap ai">
-			<div>
-				<span class="kicker">Built for working with agents</span>
-				<h2>Boring technology is AI-friendly technology.</h2>
-				<p class="muted" style="font-size:1.1rem">
-					Coding agents are only as good as the feedback they get. A single typed language, fast tests and
-					architecture rules that fail loudly give them exactly that, so a team of three can review more than it
-					has to type.
-				</p>
-				<div class="loop" aria-label="Working loop">
-					<span class="h">You: shape the next piece</span><i>→</i>
-					<span class="a">Agent: drafts it</span><i>→</i>
-					<span class="a">Build: compiles, tests, checks boundaries</span><i>→</i>
-					<span class="h">You: review and ship</span>
+		<div class="wrap">
+			<div class="ai">
+				<div>
+					<span class="kicker">Built for working with agents</span>
+					<h2>Boring technology is AI-friendly technology.</h2>
+					<p class="muted" style="font-size:1.1rem">
+						Coding agents are only as good as the feedback they get. A single typed language, fast tests,
+						architecture rules that fail loudly and a short spec in every slice give them exactly that, so a team
+						of three can review more than it has to type.
+					</p>
+					<div class="loop" aria-label="Working loop">
+						<span class="h">You: shape the next piece</span><i>→</i>
+						<span class="a">Agent: specs it with you, then builds</span><i>→</i>
+						<span class="a">Build: compiles, tests, checks boundaries and spec</span><i>→</i>
+						<span class="h">You: review and ship</span>
+					</div>
+				</div>
+				<div class="ai-points">
+					<div class="card">
+						<h3>Guardrails, not guesswork</h3>
+						<p>Modulith and ArchUnit tests catch an agent that wanders into the wrong module before a human has to.</p>
+					</div>
+					<div class="card">
+						<h3>One language in context</h3>
+						<p>No TypeScript types drifting from Java DTOs. The agent sees the page, the service and the data in one place.</p>
+					</div>
+					<div class="card">
+						<h3>Feedback in seconds</h3>
+						<p>The compiler, JUnit, Mockito and WicketTester check UI and logic without a browser, and Testcontainers gives every test run a real MongoDB.</p>
+					</div>
+					<div class="card">
+						<h3>The spec lives in the slice</h3>
+						<p>Each slice carries its contract in its own <code>package-info.java</code>: operations, numbered requirements, events, out of scope. Every requirement has a test with its id, and the build fails when the two drift apart. One screen an agent can re-read on every loop. Based on <a href="https://sbce.space" target="_blank" rel="noopener">SBCE</a> by Adam Bien.</p>
+					</div>
 				</div>
 			</div>
-			<div class="ai-points">
-				<div class="card">
-					<h3>Guardrails, not guesswork</h3>
-					<p>Modulith and ArchUnit tests catch an agent that wanders into the wrong module before a human has to.</p>
-				</div>
-				<div class="card">
-					<h3>One language in context</h3>
-					<p>No TypeScript types drifting from Java DTOs. The agent sees the page, the service and the data in one place.</p>
-				</div>
-				<div class="card">
-					<h3>Feedback in seconds</h3>
-					<p>The compiler, JUnit, Mockito and WicketTester check UI and logic without a browser, and Testcontainers gives every test run a real MongoDB.</p>
-				</div>
-				<div class="card">
-					<h3>Conventions as skills</h3>
-					<p>Curated agent skills, such as those collected at <a href="https://jvmskills.com/" target="_blank" rel="noopener">jvmskills.com</a>, teach agents how your team builds slices.</p>
-				</div>
-			</div>
+			<p class="credit">
+				SBCE (spec-driven Boundary-Control-Entity) was created by Adam Bien and is described at
+				<a href="https://sbce.space" target="_blank" rel="noopener">sbce.space</a>. We use its core ideas, the spec as the
+				package's own doc and the boundary/control/entity layout inside each business component, and map them onto
+				Spring Modulith: each business component is a module, and other slices see nothing of it but the events
+				it publishes.
+			</p>
 		</div>
 	</section>
 
@@ -1173,7 +1405,7 @@ class OrderServiceTests {
 				</article>
 				<article class="card">
 					<h3>Shaped before it's built</h3>
-					<p>Experienced people shape the work first: the problem, a rough solution, the rabbit holes and what's out of scope. Agents build fast; shaping makes sure they build the right thing.</p>
+					<p>Experienced people shape the work first: the problem, a rough solution, the rabbit holes and what's out of scope. The pitch is the bet. Once the team takes it on, it becomes requirements in the slices it touches, and those stay when the cycle ends. Agents build fast; shaping and the spec make sure they build the right thing.</p>
 				</article>
 				<article class="card">
 					<h3>Whole scopes, one piece at a time</h3>
@@ -1213,7 +1445,7 @@ class OrderServiceTests {
 						defaults preselected: Wicket, MongoDB, Testcontainers and Spring Modulith.
 					</p>
 					<div class="links">
-						<a href="https://start.fullstack4j.dev/#!type=maven-project&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">Open the generator →</a>
+						<a href="https://start.fullstack4j.dev/#!type=maven-project&amp;jvmVersion=25&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">Open the generator →</a>
 						<a href="https://github.com/danielbartl/fullstack4j-start" target="_blank" rel="noopener">GitHub</a>
 					</div>
 				</article>
@@ -1246,7 +1478,8 @@ class OrderServiceTests {
 
 			<div class="code curl">
 				<div class="code-head"><span class="dots"><i></i><i></i><i></i></span><span class="file">terminal</span><button class="copy" type="button">Copy</button></div>
-				<pre><code>curl https://start.fullstack4j.dev/starter.zip -d dependencies=wicket,data-mongodb,testcontainers,modulith -o shop.zip
+				<pre><code>curl https://start.fullstack4j.dev/starter.zip -o shop.zip \
+     -d javaVersion=25 -d dependencies=wicket,data-mongodb,testcontainers,modulith
 unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># the app on a throwaway MongoDB in Docker</span></code></pre>
 			</div>
 
@@ -1262,7 +1495,7 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 					<a class="chip" href="https://site.mockito.org/" target="_blank" rel="noopener">Mockito</a>
 					<a class="chip" href="https://www.archunit.org/" target="_blank" rel="noopener">ArchUnit</a>
 					<a class="chip" href="https://testcontainers.com/" target="_blank" rel="noopener">Testcontainers</a>
-					<a class="chip" href="https://jvmskills.com/" target="_blank" rel="noopener">jvmskills.com <small>agent skills</small></a>
+					<a class="chip" href="https://sbce.space" target="_blank" rel="noopener">SBCE <small>spec workflow</small></a>
 				</div>
 			</div>
 		</div>
@@ -1379,14 +1612,15 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 						A workshop on your product and your team. We map the domain into slices with Event Modeling, shape
 						the first pitch, look at what you already run, and give you an honest go or no-go.
 					</p>
-					<div class="outcome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg><span>A slice map, a first shaped pitch and a clear decision.</span></div>
+					<div class="outcome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg><span>A slice map, a first shaped pitch with the spec for its first slice, and a clear decision.</span></div>
 				</article>
 				<article class="card">
 					<span class="when">Up to 6 weeks</span>
 					<h3>First cycle</h3>
 					<p>
-						We set up the repository, modules, architecture tests, CI, hosting and agent conventions, and ship
-						the first shaped project within its appetite, together with the people who will own it.
+						We set up the repository, modules, architecture tests, CI and hosting, plus the spec-and-test loop
+						your agents work in, and ship the first shaped project within its appetite, together with the people
+						who will own it.
 					</p>
 					<div class="outcome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg><span>A running product and a team that knows how to shape and ship the next piece.</span></div>
 				</article>
@@ -1452,7 +1686,7 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 				<ul class="courses">
 					<li>Apache Wicket for Spring developers <span>1 day</span></li>
 					<li>Modular monoliths with Spring Modulith &amp; ArchUnit <span>1 day</span></li>
-					<li>AI-assisted vertical-slice delivery <span>1 day</span></li>
+					<li>Spec-driven slices with coding agents <span>1 day</span></li>
 				</ul>
 			</div>
 		</div>
@@ -1515,8 +1749,8 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 				<details>
 					<summary>Isn't Apache Wicket old technology?</summary>
 					<p>
-						It is mature: an Apache project with two decades of production use. Wicket 10 runs on Java 17+, Jakarta
-						EE 10 and the current Spring Boot. "Old" mostly means it has kept working while other frameworks were
+						It is mature: an Apache project with two decades of production use. Wicket 10 runs on Jakarta EE 10, the
+						current Spring Boot and Java 25, which is what we build on. "Old" mostly means it has kept working while other frameworks were
 						rewritten. That is exactly what you want under a product you plan to keep for ten years.
 					</p>
 				</details>
@@ -1574,6 +1808,17 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 					<p>
 						No. The approach stands on its own and was useful long before coding agents. Agents make a small team
 						even more effective, and the architecture tests make them safe to use. How far you go is up to you.
+						The spec in each slice pays off without them too: it is the first thing a new colleague reads.
+					</p>
+				</details>
+				<details>
+					<summary>Isn't a spec just more documentation to keep up?</summary>
+					<p>
+						Not this kind. It lives in the slice's own <code>package-info.java</code>, so it moves and refactors with
+						the code, and every requirement has a test that carries its id. When spec and tests disagree, the build
+						fails. If you need Markdown for a portal or for agents, generate it from the code with
+						<a href="https://github.com/AdamBien/jmarkdoc" target="_blank" rel="noopener">jmarkdoc</a> instead of
+						writing a second copy.
 					</p>
 				</details>
 			</div>
@@ -1634,7 +1879,7 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 				["c", /\/\/[^\n]*|\/\*[\s\S]*?\*\//],
 				["s", /"(?:\\.|[^"\\])*"/],
 				["a", /@[A-Za-z_]\w*/],
-				["k", /\b(?:package|import|public|protected|private|class|interface|extends|implements|return|new|static|final|void|int|long|boolean|var|if|else|throws|super|this|null|true|false)\b/],
+				["k", /\b(?:package|import|public|protected|private|class|interface|extends|implements|return|new|static|final|void|int|long|boolean|var|if|else|try|catch|throw|throws|super|this|null|true|false)\b/],
 				["t", /\b[A-Z][A-Za-z0-9_]*\b/],
 				["n", /\b\d+\b/]
 			],
