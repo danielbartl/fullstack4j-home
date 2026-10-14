@@ -664,7 +664,7 @@
 			<figure class="slices-figure">
 				<svg viewBox="0 0 520 420" role="img" aria-labelledby="fig-title fig-desc">
 					<title id="fig-title">Slices, not layers</title>
-					<desc id="fig-desc">Three horizontal technical layers (UI, logic, data) are crossed by three vertical feature slices called ordering, billing and shipping. Each slice has one owner and contains its own page, service and repository. Slices talk to each other through events.</desc>
+					<desc id="fig-desc">Three horizontal technical layers (UI, logic, data) are crossed by three vertical feature slices called ordering, billing and shipping. Each slice has one owner and contains its own page, service and repository. Slices talk to each other mostly through events.</desc>
 
 					<rect class="fig-band" x="16" y="96" width="488" height="64" rx="12"/>
 					<rect class="fig-band" x="16" y="186" width="488" height="64" rx="12"/>
@@ -711,7 +711,7 @@
 					<text class="fig-name" x="188" y="392" text-anchor="middle">ordering</text>
 					<text class="fig-name" x="308" y="392" text-anchor="middle">billing</text>
 					<text class="fig-name" x="428" y="392" text-anchor="middle">shipping</text>
-					<text class="fig-event-text" x="308" y="414" text-anchor="middle">slices talk through events · boundaries tested</text>
+					<text class="fig-event-text" x="308" y="414" text-anchor="middle">slices prefer events · boundaries tested</text>
 				</svg>
 				<figcaption>One feature, one slice, one owner, from database to button.</figcaption>
 			</figure>
@@ -837,9 +837,10 @@
 						<span class="num">03</span>
 						<h3>Boundaries are tested, not documented</h3>
 						<p>
-							Spring Modulith turns each slice into a module that shows the others only its events, and ArchUnit
+							Spring Modulith turns each slice into a module that shows the others only its base package: its
+							page, its events and, where an event won't do, an interface that returns plain records. ArchUnit
 							adds the house rules. When code reaches
-							into another slice, the build fails. Architecture stays intact while people, and agents, write
+							into another slice's internals, the build fails. Architecture stays intact while people, and agents, write
 							code quickly.
 						</p>
 					</div>
@@ -881,34 +882,33 @@
 ├── StartPage.java        <span class="note">links to each slice's page</span>
 ├── package-info.java     <span class="note">the map: slices, flow, words</span>
 ├── <span class="hl">ordering/</span>             <span class="note">one slice, one module</span>
-│   ├── package-info.java  <span class="note">the spec: what it promises</span>
-│   ├── <span class="dir">boundary/</span>          <span class="note">entry points and events</span>
-│   │   ├── OrdersPage.java       <span class="note">UI, plain Wicket</span>
-│   │   ├── Orders.java           <span class="note">use cases</span>
-│   │   └── OrderShipped.java     <span class="note">the only exposed type</span>
-│   ├── <span class="dir">control/</span>
-│   │   └── OrderRepository.java  <span class="note">MongoRepository</span>
-│   └── <span class="dir">entity/</span>
-│       └── Order.java            <span class="note">one MongoDB document</span>
+│   ├── package-info.java         <span class="note">the spec: what it promises</span>
+│   ├── OrdersPage.java           <span class="note">UI, plain Wicket</span>
+│   ├── OrderShipped.java         <span class="note">event for other slices</span>
+│   └── <span class="dir">internal/</span>                 <span class="note">hidden from other slices</span>
+│       ├── Orders.java           <span class="note">use cases</span>
+│       ├── Order.java            <span class="note">one MongoDB document</span>
+│       └── OrderRepository.java  <span class="note">MongoRepository</span>
 ├── <span class="dir">billing/</span>              <span class="note">listens to OrderShipped</span>
 └── <span class="dir">shipping/</span>
 
 <span class="dir">src/main/resources/…/shop/</span>
 ├── StartPage.html
-└── <span class="dir">ordering/boundary/</span>
+└── <span class="dir">ordering/</span>
     └── OrdersPage.html   <span class="note">markup, no JS build</span>
 
 <span class="dir">src/test/java/…/shop/</span>
 ├── <span class="test">ArchitectureTests.java</span>      <span class="note">Modulith + ArchUnit</span>
 ├── <span class="test">SpecTraceabilityTests.java</span>  <span class="note">spec and tests in step</span>
 ├── <span class="test">TestShopApplication.java</span>    <span class="note">dev run on MongoDB</span>
-└── <span class="dir">ordering/boundary/</span>
+└── <span class="dir">ordering/</span>
     └── <span class="test">OrdersTests.java</span>        <span class="note">one test per requirement</span></code></pre>
 					</div>
 					<div class="anatomy-notes">
 						<div><strong>Readable by anyone, starting with the spec.</strong> No frontend folder and backend folder to keep in sync. The slice's <code>package-info.java</code> says what it promises in one screen, and it is the first thing a new colleague or an agent reads.</div>
 						<div><strong>Small enough for one head</strong>, and for one agent's context window.</div>
-						<div><strong>Guarded by tests.</strong> <code>billing</code> can react to an order being shipped, but it only sees <code>OrderShipped</code>; the rest of <code>ordering</code> stays internal. And every requirement in the spec has a test that carries its id.</div>
+						<div><strong>Guarded by tests.</strong> <code>billing</code> can react to an order being shipped because <code>OrderShipped</code> sits in <code>ordering</code>'s base package; everything in <code>internal</code> stays hidden from it. And every requirement in the spec has a test that carries its id.</div>
+						<div><strong>Events first, calls when needed.</strong> Slices react to each other's events wherever they can. When one really has to ask another something, it calls an interface in that slice's base package, which answers with records defined right next to it; the implementation and the documents stay in <code>internal</code>.</div>
 						<div><strong>Stored as documents.</strong> An order and its lines are one MongoDB document, shaped like the code, so the schema grows with the slice instead of through migrations.</div>
 					</div>
 				</div>
@@ -931,7 +931,7 @@
 <div class="tab-panel" role="tabpanel" id="p-spec" aria-labelledby="t-spec"><pre><code data-lang="java">/// # Ordering
 /// &gt; Take a customer's order and see it through until it ships.
 ///
-/// ## Boundary
+/// ## Operations
 /// - `place-order`: take an order for a customer (`Orders.place`)
 /// - `open-orders`: list what still has to ship (`Orders.open`)
 /// - `ship-order`: hand an open order over to shipping (`Orders.ship`)
@@ -964,7 +964,7 @@
 package com.acme.shop.ordering;
 
 import org.springframework.modulith.ApplicationModule;</code></pre></div>
-<div class="tab-panel" role="tabpanel" id="p-page" aria-labelledby="t-page" hidden><pre><code data-lang="java">package com.acme.shop.ordering.boundary;
+<div class="tab-panel" role="tabpanel" id="p-page" aria-labelledby="t-page" hidden><pre><code data-lang="java">package com.acme.shop.ordering;
 
 public class OrdersPage extends WebPage {
 
@@ -1000,7 +1000,7 @@ public class OrdersPage extends WebPage {
         &lt;button wicket:id="ship"&gt;Ship&lt;/button&gt;
     &lt;/li&gt;
 &lt;/ul&gt;</code></pre></div>
-<div class="tab-panel" role="tabpanel" id="p-svc" aria-labelledby="t-svc" hidden><pre><code data-lang="java">package com.acme.shop.ordering.boundary;
+<div class="tab-panel" role="tabpanel" id="p-svc" aria-labelledby="t-svc" hidden><pre><code data-lang="java">package com.acme.shop.ordering.internal;
 
 @Service
 @Transactional
@@ -1031,11 +1031,10 @@ public class Orders {
     }
 }
 
-// OrderShipped.java: the only type other slices may use;
-// Orders, the page, control and entity stay internal
-@NamedInterface("events")
+// OrderShipped.java, in the base package: other slices
+// may use it; everything in internal stays hidden
 public record OrderShipped(String orderId) {}</code></pre></div>
-<div class="tab-panel" role="tabpanel" id="p-doc" aria-labelledby="t-doc" hidden><pre><code data-lang="java">package com.acme.shop.ordering.entity;
+<div class="tab-panel" role="tabpanel" id="p-doc" aria-labelledby="t-doc" hidden><pre><code data-lang="java">package com.acme.shop.ordering.internal;
 
 // Stored as one document, lines included: no join table,
 // no mapping layer, no migration script for a new field.
@@ -1060,13 +1059,13 @@ public record Order(@Id String id, String customer,
     }
 }
 
-// control/OrderRepository.java: the whole persistence layer
+// OrderRepository.java: the whole persistence layer
 public interface OrderRepository
         extends MongoRepository&lt;Order, String&gt; {
 
     List&lt;Order&gt; findByShippedAtIsNull();
 }</code></pre></div>
-<div class="tab-panel" role="tabpanel" id="p-test" aria-labelledby="t-test" hidden><pre><code data-lang="java">package com.acme.shop.ordering.boundary;
+<div class="tab-panel" role="tabpanel" id="p-test" aria-labelledby="t-test" hidden><pre><code data-lang="java">package com.acme.shop.ordering;
 
 /// Each test starts with the id of the requirement it proves.
 /// The requirements live in this slice's `package-info.java`.
@@ -1147,22 +1146,10 @@ class OrdersTests {
         new ClassFileImporter().importPackages("com.acme.shop");
 
     @Test
-    void slicesOnlySeeEachOthersEvents() {
-        // fails on cycles or on any use of another slice
-        // beyond the events it exposes
+    void slicesStayOutOfEachOthersInternals() {
+        // fails on cycles and on any use of another slice's
+        // internal package, from the root too
         modules.verify();
-    }
-
-    @Test
-    void layersPointInward() {
-        // boundary → control → entity, never the other way
-        layeredArchitecture().consideringOnlyDependenciesInLayers()
-            .layer("boundary").definedBy("..boundary..")
-            .layer("control").definedBy("..control..")
-            .layer("entity").definedBy("..entity..")
-            .whereLayer("boundary").mayNotBeAccessedByAnyLayer()
-            .whereLayer("control").mayOnlyBeAccessedByLayers("boundary")
-            .check(classes);
     }
 
     @Test
@@ -1170,17 +1157,6 @@ class OrdersTests {
         noClasses().that().areAssignableTo(Component.class)
             .should().dependOnClassesThat()
             .areAssignableTo(Repository.class)
-            .check(classes);
-    }
-
-    @Test
-    void rootOnlyKnowsPages() {
-        // the root sits above the slices: it may link to their
-        // pages, but never to their control or entity
-        classes().that().resideInAPackage("com.acme.shop")
-            .should().onlyDependOnClassesThat(
-                resideOutsideOfPackage("com.acme.shop.*..")
-                    .or(assignableTo(Page.class)))
             .check(classes);
     }
 
@@ -1308,10 +1284,10 @@ class SpecTraceabilityTests {
 			</div>
 			<p class="credit">
 				SBCE (spec-driven Boundary-Control-Entity) was created by Adam Bien and is described at
-				<a href="https://sbce.space" target="_blank" rel="noopener">sbce.space</a>. We use its core ideas, the spec as the
-				package's own doc and the boundary/control/entity layout inside each business component, and map them onto
-				Spring Modulith: each business component is a module, and other slices see nothing of it but the events
-				it publishes.
+				<a href="https://sbce.space" target="_blank" rel="noopener">sbce.space</a>. We use its spec: the package's own
+				doc, with numbered requirements that each have a test. Inside a slice we keep Spring Modulith's default
+				instead of boundary/control/entity: the base package is what other slices and the start page may use,
+				everything else goes in <code>internal</code>.
 			</p>
 		</div>
 	</section>
@@ -1770,6 +1746,16 @@ unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># th
 						migration scripts. Testcontainers gives every developer and every CI run a real MongoDB, with
 						nothing to install. If your domain is strongly relational or the database is already decided,
 						Spring Data JPA fits the same slice structure.
+					</p>
+				</details>
+				<details>
+					<summary>Can slices call each other directly?</summary>
+					<p>
+						Yes, when an event doesn't fit, for example when a page has to show another slice's data right away.
+						Events stay the first choice because the slice that publishes them doesn't need to know who listens.
+						A slice that has to answer directly puts an interface and the records it returns in its base package.
+						The implementation stays in <code>internal</code>, next to the MongoDB documents, so both can change
+						without breaking anyone. Spring Modulith fails the build when anything else in the slice is used.
 					</p>
 				</details>
 				<details>
