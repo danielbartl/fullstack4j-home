@@ -649,7 +649,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
 						Start a conversation
 					</a>
-					<a class="btn btn-secondary" href="https://start.fullstack4j.dev/#!type=maven-project&amp;jvmVersion=25&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">
+					<a class="btn btn-secondary" href="https://start.fullstack4j.dev/#!type=maven-project&amp;jvmVersion=25&amp;dependencies=fullstack4j" target="_blank" rel="noopener">
 						Generate a project
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
 					</a>
@@ -1418,11 +1418,11 @@ class SpecTraceabilityTests {
 					<span class="label">start.fullstack4j.dev</span>
 					<h3>fullstack4j start</h3>
 					<p>
-						Everything start.spring.io offers, plus Apache Wicket. Our link comes with the fullstack4j
-						defaults preselected: Wicket, MongoDB, Testcontainers and Spring Modulith.
+						Everything start.spring.io offers, plus Apache Wicket and the whole fullstack4j stack. Our link
+						preselects fullstack4j: Wicket, MongoDB, Spring Modulith and Testcontainers in two starters.
 					</p>
 					<div class="links">
-						<a href="https://start.fullstack4j.dev/#!type=maven-project&amp;jvmVersion=25&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">Open the generator →</a>
+						<a href="https://start.fullstack4j.dev/#!type=maven-project&amp;jvmVersion=25&amp;dependencies=fullstack4j" target="_blank" rel="noopener">Open the generator →</a>
 						<a href="https://github.com/danielbartl/fullstack4j-start" target="_blank" rel="noopener">GitHub</a>
 					</div>
 				</article>
@@ -1482,7 +1482,7 @@ class SpecTraceabilityTests {
 			<div class="code curl">
 				<div class="code-head"><span class="dots"><i></i><i></i><i></i></span><span class="file">terminal</span><button class="copy" type="button">Copy</button></div>
 				<pre><code>curl https://start.fullstack4j.dev/starter.zip -o shop.zip \
-     -d javaVersion=25 -d dependencies=wicket,data-mongodb,testcontainers,modulith
+     -d javaVersion=25 -d dependencies=fullstack4j
 unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># the app on a throwaway MongoDB in Docker</span></code></pre>
 			</div>
 
