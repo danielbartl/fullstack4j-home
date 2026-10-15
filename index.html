@@ -436,6 +436,7 @@
 		/* ---------- toolbox ---------- */
 
 		.tools { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+		.tools > .tool:last-child:nth-child(odd) { grid-column: 1 / -1; }
 		.tool { padding: 28px; display: flex; flex-direction: column; }
 		.tool .label { font: 600 .78rem var(--mono); color: var(--text-faint); margin-bottom: 10px; }
 		.tool h3 { font-size: 1.25rem; }
@@ -1423,6 +1424,18 @@ class SpecTraceabilityTests {
 					<div class="links">
 						<a href="https://start.fullstack4j.dev/#!type=maven-project&amp;jvmVersion=25&amp;dependencies=wicket,data-mongodb,testcontainers,modulith" target="_blank" rel="noopener">Open the generator →</a>
 						<a href="https://github.com/danielbartl/fullstack4j-start" target="_blank" rel="noopener">GitHub</a>
+					</div>
+				</article>
+				<article class="card tool">
+					<span class="label">dev.jbaby · <span style="white-space: nowrap">fullstack4j-spring-boot-starter</span></span>
+					<h3>fullstack4j Spring Boot Starter</h3>
+					<p>
+						The whole stack in two dependencies: Wicket with Wicket Oat, Spring Modulith and MongoDB at versions
+						that work together, plus a test starter with a MongoDB replica set for tests and development.
+					</p>
+					<div class="links">
+						<a href="https://danielbartl.github.io/fullstack4j-spring-boot-starter/" target="_blank" rel="noopener">Project page →</a>
+						<a href="https://github.com/danielbartl/fullstack4j-spring-boot-starter" target="_blank" rel="noopener">GitHub</a>
 					</div>
 				</article>
 				<article class="card tool">
