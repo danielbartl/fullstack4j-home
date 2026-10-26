@@ -1491,7 +1491,8 @@ class SpecTraceabilityTests {
 			<div class="code curl">
 				<div class="code-head"><span class="dots"><i></i><i></i><i></i></span><span class="file">terminal</span><button class="copy" type="button">Copy</button></div>
 				<pre><code>curl https://start.fullstack4j.dev/starter.zip -o shop.zip \
-     -d javaVersion=25 -d dependencies=fullstack4j
+     -d javaVersion=25 -d dependencies=fullstack4j \
+     -d groupId=com.acme -d artifactId=shop -d name=shop -d packageName=com.acme.shop
 unzip shop.zip &amp;&amp; ./mvnw spring-boot:test-run   <span class="tok-c"># the app on a throwaway MongoDB in Docker</span></code></pre>
 			</div>
 
